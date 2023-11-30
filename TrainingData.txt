@@ -1,0 +1,3 @@
+BALANCE balance holdings money cash funds capital assets
+DEPOSIT deposit add submit commit
+WITHDRAW withdraw retrieve take remove empty
