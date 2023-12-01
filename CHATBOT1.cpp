@@ -230,7 +230,7 @@ public:
     }
 
     //Search Algorithms
-    void promptSearch(string prompt) {
+    string promptSearch(string prompt) {
         stringstream ss(prompt);
         vector<string> promptParts;
         string word;
@@ -244,12 +244,24 @@ public:
                 codeResponse = callFunc(1001);
                 break;
             }
-            else if (DFS(placeToVal("DEPOSIT"), promptParts.at(i))) {
+            else if (DFS(placeToVal("INFO"), promptParts.at(i))) {
                 codeResponse = callFunc(1002);
                 break;
             }
-            else if (DFS(placeToVal("WITHDRAW"), promptParts.at(i))) {
+            else if (DFS(placeToVal("DEPOSIT"), promptParts.at(i))) {
                 codeResponse = callFunc(1003);
+                break;
+            }
+            else if (DFS(placeToVal("WITHDRAW"), promptParts.at(i))) {
+                codeResponse = callFunc(1004);
+                break;
+            }
+            else if (DFS(placeToVal("TRANSFER"), promptParts.at(i))) {
+                codeResponse = callFunc(1005);
+                break;
+            }
+            else if (DFS(placeToVal("PAY"), promptParts.at(i))) {
+                codeResponse = callFunc(1006);
                 break;
             }
             else {
@@ -257,17 +269,26 @@ public:
                 continue;
             }
         }
-        cout << codeResponse << endl;
+        return codeResponse;
     }
     string callFunc(int code) {
         if (code == 1001) {
             return "BALANCE";
         }
         else if (code == 1002) {
-            return "DEPOSIT";
+            return "INFO";
         }
         else if (code == 1003) {
+            return "DEPOSIT";
+        }
+        else if (code == 1004) {
             return "WITHDRAW";
+        }
+        else if (code == 1005) {
+            return "TRANSFER";
+        }
+        else if (code == 1006) {
+            return "PAY";
         }
         else {
             return "ERROR";
@@ -351,7 +372,7 @@ void createChatModel(Graph& model) {
             istringstream iss(line);
             string word, catWord;
             while (iss >> word) {
-                if (word == "BALANCE" || word == "DEPOSIT" || word == "WITHDRAW") {
+                if (word == "BALANCE" || word == "INFO" || word == "DEPOSIT" || word == "WITHDRAW" || word == "TRANSFER" || word == "PAY") {
                     catWord = word;
                     model.addLocation(catWord);
                 }
@@ -369,7 +390,8 @@ void createChatModel(Graph& model) {
 }
 
 int main() {
-    Graph myModel(25);
+    Graph myModel(60);
+    Account account("Account1", 238465246588, 513684958, 100, 189.34, 1034.33, 9090);
 
     createChatModel(myModel);
     myModel.printGraph();
@@ -377,7 +399,80 @@ int main() {
     while (prompt != "q") {
         cout << "Ask me a questions about your account?: " << endl;
         getline(cin, prompt);
-        myModel.promptSearch(prompt);
+        string response = myModel.promptSearch(prompt);
+        char yN;
+        float amount = 0;
+        cout << myModel.promptSearch(prompt) << endl;
+        
+        
+        if (response == "BALANCE") {
+            cout << "Account Name: " << account.name << endl;
+            cout << "Checking Balance: $" << account.checkingBlnc() << endl;
+            cout << "Savings Balance: $" << account.savingBlnc() << endl;
+            cout << "Debt: $" << account.debtBlnc() << endl;
+            cout << "Rewards Points: " << account.pullRewards() << endl;
+        }
+        else if (response == "INFO") {
+            cout << "Account Name: " << account.name << endl;
+            cout << "Account Number: $" << account.pullAccNum() << endl;
+            cout << "Routing Number: $" << account.pullRtnNum() << endl;
+            cout << "Debt: $" << account.debtBlnc() << endl;
+            cout << "Rewards Points: " << account.pullRewards() << endl;
+        }
+        else if (response == "DEPOSIT") {
+            cout << "How much would you like to deposit?" << endl;
+            cin >> amount;
+            cout << "Would you like to deposit into your checking account? (Y/N)" << endl;
+            cin >> yN;
+
+            if (yN == 'Y' || yN == 'y') {
+                account.addBalance(amount, true);
+            }
+            else if (yN == 'N' || yN == 'n') {
+                account.addBalance(amount, false);
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        else if (response == "WITHDRAW") {
+            cout << "How much would you like to withdraw?" << endl;
+            cin >> amount;
+            cout << "Would you like to remove from your checking account? (Y/N)" << endl;
+            cin >> yN;
+
+            if (yN == 'Y' || yN == 'y') {
+                account.removeBalance(amount, true);
+            }
+            else if (yN == 'N' || yN == 'n') {
+                account.removeBalance(amount, false);
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        else if (response == "TRANSFER") {
+            cout << "How much would you like to transfer?" << endl;
+            cin >> amount;
+            cout << "Would you like to move funds to savings? (Y/N)" << endl;
+            cin >> yN;
+
+            if (yN == 'Y' || yN == 'y') {
+                account.moveBalance(amount, true);
+            }
+            else if (yN == 'N' || yN == 'n') {
+                account.removeBalance(amount, false);
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        else if (response == "PAY") {
+            cout << "How much would you like to pay?" << endl;
+            cin >> amount;
+            account.payDebt(amount);
+        }
+        
     }
 
     return 0;
