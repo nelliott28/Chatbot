@@ -1,6 +1,10 @@
-BALANCE balance holdings money cash funds capital assets
-INFO info information details routing account
-DEPOSIT deposit add submit commit
-WITHDRAW withdraw retrieve take remove empty
-TRANSFER transfer move shift relocate
-PAY pay recompense settle
+BALANCE balance holdings money cash funds capital assets Balance Holdings Money Cash Funds Capital Assets
+INFO info information details account Info Information Details Account
+DEPOSIT deposit add submit commit Deposit Add Submit Commit
+WITHDRAW withdraw retrieve take remove empty Withdraw Retrieve Take Remove Empty
+TRANSFER transfer move shift relocate Transfer Move Shift Relocate
+PAY pay recompense settle Pay Recompense Settle
+DISPLAY display show see Display Show See
+SAVINGS savings saving Savings Saving
+CHECKINGS checkings checking Checkings Checking
+FROM from From
